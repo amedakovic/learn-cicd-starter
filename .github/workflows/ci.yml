@@ -5,8 +5,8 @@ on:
     branches: [main]
 
 jobs:
-  formating:
-    name: formating
+  style:
+    name: style
     runs-on: ubuntu-latest
 
     steps:
