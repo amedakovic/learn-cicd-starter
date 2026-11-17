@@ -27,6 +27,11 @@ jobs:
       - name: run staticcheck (linter)
         run: staticcheck ./...
 
+      - name: install gosec
+        run: go install github.com/securego/gosec/v2/cmd/gosec@latest
+
+      - name: run gosec
+        run: gosec ./...
   tests:
     name: Tests
     runs-on: ubuntu-latest
