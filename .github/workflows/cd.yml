@@ -45,7 +45,7 @@ jobs:
       - name: build and publish docker image
         run: gcloud builds submit --tag us-central1-docker.pkg.dev/notely-515219/notely-ar-repo/notely:latest .
 
-      - nane: run migrations
+      - name: run migrations
         run: ./scripts/migrateup.sh
         
       - name: Deploy to Cloud Run
