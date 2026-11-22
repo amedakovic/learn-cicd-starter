@@ -9,6 +9,9 @@ jobs:
     name: Deploy
     runs-on: ubuntu-latest
 
+    env:
+      DATABASE_URL: libsql://notely-db-alex0909.aws-us-east-2.turso.io?authToken=eyJhbGciOiJFZERTQSIsInR5cCI6IkpXVCJ9.eyJhIjoicnciLCJpYXQiOjE3OTUyNjczNDYsImlkIjoiMDFhMWZlNDItZTQwMS03ODQwLTlkYjYtNWE3NjA2ZTVhYjliIiwia2lkIjoieGZSNlg4MGttOHlhWXRMV2ViamFuY0VnVzF0VWc5Qk43dmRBcXlDU3hnayIsInJpZCI6IjE0YjYyZTBiLTNhNDctNDhiOC04MGI4LTVhODkxYmNkYjI0ZiJ9.f7-fPLmwXt3HUeflMI1rLav9qRRAQZFmLeJxgyJxNn3QqNKe8yqCuROlMOj3be-Y-2xLPuKkyPrBewpMRPdECQ
+
     permissions:
       contents: read
       id-token: write
@@ -21,6 +24,9 @@ jobs:
         uses: actions/setup-go@v6
         with:
           go-version: "1.27.1"
+      
+      - name: install goose
+        run: go install goose
 
       - name: build
         run: ./scripts/buildprod.sh
@@ -39,5 +45,8 @@ jobs:
       - name: build and publish docker image
         run: gcloud builds submit --tag us-central1-docker.pkg.dev/notely-515219/notely-ar-repo/notely:latest .
 
+      - name: run migrations
+        run: ./scripts/migrateup.sh
+        
       - name: Deploy to Cloud Run
         run: gcloud run deploy notely --image us-central1-docker.pkg.dev/notely-515219/notely-ar-repo/notely:latest --region us-central1 --allow-unauthenticated --project notely-515219 --max-instances=4
